@@ -1,35 +1,49 @@
-import {Server} from "socket.io";
+import { Server } from "socket.io";
 import http from "http";
 import express from "express";
 
 const app = express();
 
 const server = http.createServer(app);
-const io = new Server(server);
 
+// ✅ Maintain mapping between userId and socketId
+const userSocketMap = {}; // { userId: socketId }
+
+// ✅ Helper function to get receiver socket ID
 export const getReceiverSocketId = (receiverId) => {
-    console.log("the receiverId is",receiverId);
-    return userSocketMap[receiverId];
-}
+  console.log("The receiverId is:", receiverId);
+  return userSocketMap[receiverId];
+};
 
-const userSocketMap = {}; // {userId->socketId}
+// ✅ Initialize Socket.IO server with CORS setup
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:5173", // React app origin
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
+});
 
+// ✅ Handle connections
+io.on("connection", (socket) => {
+  console.log("🟢 New user connected:", socket.id);
 
-io.on('connection', (socket)=>{
-    console.log("newUser is connected",socket.id)
-    const userId = socket.handshake.query.userId
-    if(userId !== undefined){
-        userSocketMap[userId] = socket.id;
-    } 
+  const userId = socket.handshake.query.userId;
+  console.log("User ID from client:", userId);
 
-    io.emit('getOnlineUsers',Object.keys(userSocketMap));
+  if (userId) {
+    userSocketMap[userId] = socket.id;
+  }
 
-    socket.on('disconnect', ()=>{
-        delete userSocketMap[userId];
-        io.emit('getOnlineUsers',Object.keys(userSocketMap));
-    })
+  // 🟢 Emit updated online users list to everyone
+  io.emit("getOnlineUsers", Object.keys(userSocketMap));
 
-})
+  // 🛑 On disconnect
+  socket.on("disconnect", () => {
+    console.log("🔴 User disconnected:", socket.id);
+    delete userSocketMap[userId];
+    io.emit("getOnlineUsers", Object.keys(userSocketMap));
+  });
+});
 
-export {app, io, server};
-
+export { app, io, server };

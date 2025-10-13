@@ -1,14 +1,75 @@
-import "./index.css";
-import RegistrationPage from "./pages/RegistrationPage";
-function App() {
- 
+import Signup from './components/Signup';
+import './index.css';
+import {createBrowserRouter, RouterProvider} from "react-router-dom";
+import HomePage from './components/HomePage';
+import Login from './components/Login';
+import { useEffect, useState } from 'react';
+import {useSelector,useDispatch} from "react-redux";
+import io from "socket.io-client";
+import { setSocket } from './redux/socketSlice';
+import { setOnlineUsers } from './redux/userSlice';
+//import { BASE_URL } from '.';
+
+const router = createBrowserRouter([
+  {
+    path:"/",
+    element:<HomePage/>
+  },
+  {
+    path:"/signup",
+    element:<Signup/>
+  },
+  {
+    path:"/login",
+    element:<Login/>
+  },
+
+])
+
+function App() { 
+  const {authUser} = useSelector(store=>store.user);
+  const {socket} = useSelector(store=>store.socket);
+  const dispatch = useDispatch();
+  console.log('authUser in App:', authUser);
+  useEffect(()=>{
+    if(authUser){
+      console.log('Attempting Socket.IO connection to http://localhost:8080 with userId:', authUser._id);
+      const socketio = io('http://localhost:8080', {
+          query:{
+            userId:authUser._id
+          }
+      });
+      dispatch(setSocket(socketio));
+
+      socketio.on('connect', () => {
+        console.log('Socket connected:', socketio.id);
+      });
+      socketio.on('connect_error', (err) => {
+        console.error('Socket connect_error:', err?.message || err);
+      });
+      socketio.on('error', (err) => {
+        console.error('Socket error:', err);
+      });
+      socketio.on('getOnlineUsers', (onlineUsers)=>{
+        console.log('onlineUsers event:', onlineUsers);
+        dispatch(setOnlineUsers(onlineUsers))
+      });
+      return () => socketio.close();
+    }else{
+      if(socket){
+        socket.close();
+        dispatch(setSocket(null));
+      }
+    }
+
+  },[authUser]);
 
   return (
-    <>
-      <h1 className="text-green-500">Hello React</h1>
-      <RegistrationPage/>
-    </>
-  )
+    <div className="p-4 h-screen flex items-center justify-center">
+      <RouterProvider router={router}/>
+    </div>
+
+  );
 }
 
-export default App
+export default App;

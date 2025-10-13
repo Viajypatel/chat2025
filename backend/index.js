@@ -9,7 +9,11 @@ import cors from "cors";
 import { app,server } from "./socket/socket.js";
 dotenv.config({});
 
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:5173',
+    methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS'],
+    allowedHeaders: ['Content-Type','Authorization']
+  }));
 const PORT = process.env.PORT || 5000;
 
 // middleware
