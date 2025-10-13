@@ -1,23 +1,28 @@
 import jwt from "jsonwebtoken";
-const isAuthenticated = async(req,res,next) => {
+
+const isAuthenticated = async (req, res, next) => {
   try {
-    const token = req.cookies.token;
-    if(!token){
-        return res.status(401).json({message:"User not authenticated."})
-    };
-    const decode = await jwt.verify(token,process.env.JWT_SECRET_KEY);
-    if(!decode){
-        return res.status(401).json({message:"Invalid token"});
-    };
-    req.id = decode.userId;
+    // 1️⃣ Get token from the Authorization header
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({ message: "No token provided or invalid format." });
+    }
+
+    // 2️⃣ Extract token after 'Bearer '
+    const token = authHeader.split(" ")[1];
+
+    // 3️⃣ Verify token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+
+    // 4️⃣ Attach user ID to the request
+    req.id = decoded.userId;
+
     next();
   } catch (error) {
-    console.log(error);
+    console.error("Auth Error:", error.message);
+    return res.status(401).json({ message: "Invalid or expired token." });
   }
 };
-export default isAuthenticated;
 
-const req = {
-    id:"",
-}
-req.id = "sdlbgnjdfn"
+export default isAuthenticated;

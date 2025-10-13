@@ -42,54 +42,48 @@ export const register = async (req, res) => {
 };
 
 export const login = async (req, res) => {
-    try {
-        const { username, password } = req.body;
-        if (!username || !password) {
-            return res.status(400).json({ message: "All fields are required" });
-        };
-        const user = await User.findOne({ username });
-        if (!user) {
-            return res.status(400).json({
-                message: "Incorrect username or password",
-                success: false
-            })
-        };
-        const isPasswordMatch = await bcrypt.compare(password, user.password);
-        if (!isPasswordMatch) {
-            return res.status(400).json({
-                message: "Incorrect username or password",
-                success: false
-            })
-        };
-        const tokenData = {
-            userId: user._id
-        };
+  try {
+    const { username, password } = req.body;
 
-        const token = await jwt.sign(tokenData, process.env.JWT_SECRET_KEY, { expiresIn: '1d' });
-
-        return res.status(200).cookie("token", token, { maxAge: 1 * 24 * 60 * 60 * 1000, httpOnly: true, sameSite: 'strict' }).json({
-            token:token,
-            _id: user._id,
-            username: user.username,
-            fullName: user.fullName,
-            profilePhoto: user.profilePhoto
-        });
-
-    } catch (error) {
-        console.log(error);
-        return res.status(500).json({ message: "Server error", error: error.message });
+    // 1️⃣ Validate input
+    if (!username || !password) {
+      return res.status(400).json({ message: "All fields are required" });
     }
-}
-export const logout = (req, res) => {
-    try {
-        return res.status(200).cookie("token", "", { maxAge: 0 }).json({
-            message: "logged out successfully."
-        })
-    } catch (error) {
-        console.log(error);
-        return res.status(500).json({ message: "Server error", error: error.message });
+
+    // 2️⃣ Find user
+    const user = await User.findOne({ username });
+    if (!user) {
+      return res.status(400).json({ message: "Incorrect username or password" });
     }
-}
+
+    // 3️⃣ Check password
+    const isPasswordMatch = await bcrypt.compare(password, user.password);
+    if (!isPasswordMatch) {
+      return res.status(400).json({ message: "Incorrect username or password" });
+    }
+
+    // 4️⃣ Create token
+    const tokenData = { userId: user._id };
+    const token = jwt.sign(tokenData, process.env.JWT_SECRET_KEY, { expiresIn: "1d" });
+
+    // 5️⃣ Send token in response body (NOT in cookies)
+    return res.status(200).json({
+      message: "Login successful",
+      token, // frontend will store this in localStorage
+      user: {
+        _id: user._id,
+        username: user.username,
+        fullName: user.fullName,
+        profilePhoto: user.profilePhoto,
+      },
+    });
+  } catch (error) {
+    console.error("Login Error:", error.message);
+    return res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+
 export const getOtherUsers = async (req, res) => {
     try {
         const loggedInUserId = req.id;
