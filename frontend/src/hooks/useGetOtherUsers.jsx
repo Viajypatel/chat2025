@@ -11,7 +11,7 @@ const useGetOtherUsers = () => {
         const fetchOtherUsers = async () => {
             try {
                 const token = localStorage.getItem('token'); 
-                const res = await axios.get(`${API_URL}/api/v1/user`, {
+                const res = await axios.get(`http://137.97.126.110/api/v1/user`, {
                     headers: {
                         Authorization: `Bearer ${token}`, // send token in header
                     },

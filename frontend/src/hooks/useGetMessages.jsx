@@ -12,7 +12,7 @@ const useGetMessages = () => {
             try {
                  const token = localStorage.getItem('token');
                 axios.defaults.withCredentials = true;
-                const res = await axios.get(`${API_URL}/api/v1/message/${selectedUser?._id}`
+                const res = await axios.get(`http://137.97.126.110/api/v1/message/${selectedUser?._id}`
                     ,
                     {
                         headers: {

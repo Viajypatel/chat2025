@@ -14,7 +14,7 @@ const SendInput = () => {
         e.preventDefault();
         try {
             const token = localStorage.getItem('token');
-            const res = await axios.post(`${API_URL}/api/v1/message/send/${selectedUser?._id}`, {message},
+            const res = await axios.post(`http://137.97.126.110/api/v1/message/send/${selectedUser?._id}`, {message},
                  {
                 headers:{
                     'Content-Type':'application/json',

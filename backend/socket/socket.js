@@ -18,7 +18,7 @@ export const getReceiverSocketId = (receiverId) => {
 // ✅ Initialize Socket.IO server with CORS setup
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173", // React app origin
+    origin: "http://137.97.126.110:5175", // React app origin
     methods: ["GET", "POST"],
     credentials: true,
   },
