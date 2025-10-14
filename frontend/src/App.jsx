@@ -8,23 +8,23 @@ import {useSelector,useDispatch} from "react-redux";
 import io from "socket.io-client";
 import { setSocket } from './redux/socketSlice';
 import { setOnlineUsers } from './redux/userSlice';
+import AuthLayout from './layouts/AuthLayout';
+const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || "http://localhost:8080";
 //import { BASE_URL } from '.';
 
 const router = createBrowserRouter([
   {
-    path:"/",
-    element:<HomePage/>
+    path: '/',
+    element: <HomePage />
   },
   {
-    path:"/signup",
-    element:<Signup/>
-  },
-  {
-    path:"/login",
-    element:<Login/>
-  },
-
-])
+    element: <AuthLayout />,  // 👈 Apply layout for auth pages
+    children: [
+      { path: '/login', element: <Login /> },
+      { path: '/signup', element: <Signup /> },
+    ]
+  }
+]);
 
 function App() { 
   const {authUser} = useSelector(store=>store.user);
@@ -34,7 +34,7 @@ function App() {
   useEffect(()=>{
     if(authUser){
       console.log('Attempting Socket.IO connection to http://localhost:8080 with userId:', authUser._id);
-      const socketio = io('http://localhost:8080', {
+      const socketio = io(SOCKET_URL, {
           query:{
             userId:authUser._id
           }

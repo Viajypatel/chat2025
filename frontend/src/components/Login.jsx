@@ -1,11 +1,10 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import toast from "react-hot-toast"
-import axios from "axios";
 import { useDispatch } from "react-redux";
 import { setAuthUser } from '../redux/userSlice';
-
-
+import axios  from 'axios';
+const API_URL = import.meta.env.VITE_API_URL|| "http://localhost:8080";
 const Login = () => {
   const [user, setUser] = useState({
     username: "",
@@ -17,7 +16,7 @@ const Login = () => {
   const onSubmitHandler = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(`/api/v1/user/login`, user, {
+      const res = await axios.post(`${API_URL}/api/v1/user/login`, user, {
         headers: {
           'Content-Type': 'application/json'
         }
@@ -25,9 +24,10 @@ const Login = () => {
       const token = res?.data?.token;
       if (token) {
         localStorage.setItem('token', token);
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        
       }
       navigate("/");
+      toast.success("User logged in successfully! 🎉");
       console.log(res);
       dispatch(setAuthUser(res.data?.user));
     } catch (error) {

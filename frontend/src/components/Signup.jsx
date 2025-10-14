@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import axios from "axios";
 import toast from "react-hot-toast";
-
+const API_URL = import.meta.env.VITE_API_URL|| "http://localhost:8080";
 
 
 const Signup = () => {
@@ -20,7 +20,7 @@ const Signup = () => {
   const onSubmitHandler = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(`/api/v1/user/register`, user, {
+      const res = await axios.post(`${API_URL}/api/v1/user/register`, user, {
         headers: {
           'Content-Type': 'application/json'
         },
@@ -43,7 +43,7 @@ const Signup = () => {
     })
   }
   return (
-    <div className=" bg-amber-500 min-w-96 mx-auto">
+    <div className="min-w-96 mx-auto">
       <div className='w-full p-6 rounded-lg shadow-md bg-gray-400 bg-clip-padding backdrop-filter backdrop-blur-md bg-opacity-10 border border-gray-100'>
         <h1 className='text-3xl font-bold text-center'>Signup</h1>
         <form onSubmit={onSubmitHandler} action="">

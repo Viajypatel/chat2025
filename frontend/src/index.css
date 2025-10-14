@@ -2,10 +2,14 @@
 @plugin "daisyui";
 
 body {
-  background: url(./bg.avif);
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  background: url('./kuu-bgImage.jpg');
+  background-size: cover;       /* Ensures image covers entire area */
+  background-position: center;  /* Centers the image */
+  background-repeat: no-repeat; /* Prevents image repetition */
+  
+  height: 100vh;  /* Full viewport height */
+  width: 100vw;   /* Full viewport width */
+  margin: 0; 
   
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
@@ -34,4 +38,15 @@ code {
   /* Customize the scrollbar thumb */
   background: #1b1b1b;
   border-radius: 10px;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.45); /* dark overlay */
+  z-index: -1;
 }

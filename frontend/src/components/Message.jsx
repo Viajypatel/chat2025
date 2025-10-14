@@ -20,9 +20,9 @@ const Message = ({message}) => {
                 </div>
             </div>
             <div className="chat-header">
-                <time className="text-xs opacity-50 text-white">{formattedTime}</time>
+                <time className="text-xs  text-white">{formattedTime}</time>
             </div>
-            <div className={`chat-bubble ${message?.senderId !== authUser?._id ? 'bg-gray-200 text-black' : ''} `}>{message?.message}</div>
+            <div className={`chat-bubble ${message?.senderId !== authUser?._id ? 'bg-white text-black' : 'bg-blue-200 text-black'} `}>{message?.message}</div>
         </div>
     )
 }

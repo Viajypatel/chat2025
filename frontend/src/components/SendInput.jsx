@@ -1,10 +1,9 @@
 import React, {useState } from 'react'
 import { IoSend } from "react-icons/io5";
-import axios from "axios";
 import {useDispatch,useSelector} from "react-redux";
 import { setMessages } from '../redux/messageSlice';
-
-
+import axios from 'axios';
+const API_URL = import.meta.env.VITE_API_URL|| "http://localhost:8080";
 const SendInput = () => {
     const [message, setMessage] = useState("");
     const dispatch = useDispatch();
@@ -14,12 +13,16 @@ const SendInput = () => {
     const onSubmitHandler = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post(`/api/v1/message/send/${selectedUser?._id}`, {message}, {
+            const token = localStorage.getItem('token');
+            const res = await axios.post(`${API_URL}/api/v1/message/send/${selectedUser?._id}`, {message},
+                 {
                 headers:{
-                    'Content-Type':'application/json'
+                    'Content-Type':'application/json',
+                    'Authorization': `Bearer ${token}`
                 },
                 withCredentials:true
-            });
+               }
+            );
             dispatch(setMessages([...messages, res?.data?.newMessage]))
         } catch (error) {
             console.log(error);
