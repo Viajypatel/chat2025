@@ -79,7 +79,7 @@ export const login = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Login Error:", error.message);
+    
     return res.status(500).json({ message: "Server error", error: error.message });
   }
 };
@@ -91,7 +91,7 @@ export const getOtherUsers = async (req, res) => {
         const otherUsers = await User.find({ _id: { $ne: loggedInUserId } }).select("-password");
         return res.status(200).json(otherUsers);
     } catch (error) {
-        console.log(error);
+        
         return res.status(500).json({ message: "Server error", error: error.message });
     }
 }
