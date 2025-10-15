@@ -74,6 +74,7 @@ export const login = async (req, res) => {
         _id: user._id,
         username: user.username,
         fullName: user.fullName,
+        gender:user.gender,
         profilePhoto: user.profilePhoto,
       },
     });
