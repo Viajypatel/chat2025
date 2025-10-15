@@ -16,7 +16,7 @@ const Login = () => {
   const onSubmitHandler = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(`http://137.97.126.110:8080/api/v1/user/login`, user, {
+      const res = await axios.post(`http://127.0.0.1:8080/api/v1/user/login`, user, {
         headers: {
           'Content-Type': 'application/json'
         }

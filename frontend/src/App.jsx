@@ -54,7 +54,9 @@ function App() {
         console.log('onlineUsers event:', onlineUsers);
         dispatch(setOnlineUsers(onlineUsers))
       });
-      return () => socketio.close();
+       return () => {
+      socketio.disconnect();
+    };
     }else{
       if(socket){
         socket.close();

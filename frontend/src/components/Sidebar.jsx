@@ -2,25 +2,28 @@ import React, { useState } from 'react'
 import { BiSearchAlt2 } from "react-icons/bi";
 import OtherUsers from './OtherUsers';
 import axios from "axios";
-import toast from "react-hot-toast";
+import toast from "react-hot-toast"
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { setAuthUser, setOtherUsers, setSelectedUser } from '../redux/userSlice';
 import { setMessages } from '../redux/messageSlice';
-
+import { setSocket } from "../redux/socketSlice";
 
 const Sidebar = () => {
     const [search, setSearch] = useState("");
     const { otherUsers } = useSelector(store => store.user);
     const dispatch = useDispatch();
-
+    const { socket } = useSelector(store => store.socket);
     const navigate = useNavigate();
 
     const logoutHandler = async () => {
         try {
-
+            if (socket) socket.disconnect();
+            dispatch(setSocket(null));
+ 
             navigate("/login");
-            toast.success(res.data.message);
+            toast.success("You have logged out successfully!👋");
+
             // clear token-based auth on logout
             if (typeof window !== 'undefined') {
                 localStorage.removeItem('token');
@@ -38,10 +41,10 @@ const Sidebar = () => {
         e.preventDefault();
 
         if (!search.trim()) {
-        // If input is empty, show all users
-        dispatch(setOtherUsers(otherUsers)); // assuming otherUsers holds the full list somewhere
-        return;
-    }
+            // If input is empty, show all users
+            dispatch(setOtherUsers(otherUsers)); // assuming otherUsers holds the full list somewhere
+            return;
+        }
         const conversationUser = otherUsers?.find((user) => user.fullName.toLowerCase().includes(search.toLowerCase()));
         if (conversationUser) {
             dispatch(setOtherUsers([conversationUser]));
@@ -50,7 +53,7 @@ const Sidebar = () => {
         }
     }
     return (
-        <div className='border-r border-slate-500 p-4 flex flex-col'>
+        <div className='border-r border-slate-500 p-4 flex flex-col h-full'>
             <form onSubmit={searchSubmitHandler} action="" className='flex items-center gap-2'>
                 <input
                     value={search}

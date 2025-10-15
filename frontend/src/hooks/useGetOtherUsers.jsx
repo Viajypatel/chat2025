@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { setOtherUsers } from '../redux/userSlice';
 import axios from 'axios';
 //import { BASE_URL } from '..';
-const API_URL = import.meta.env.VITE_API_URL|| "http://localhost:8080";
+
 const useGetOtherUsers = () => {
     const dispatch = useDispatch();
 
@@ -11,7 +11,7 @@ const useGetOtherUsers = () => {
         const fetchOtherUsers = async () => {
             try {
                 const token = localStorage.getItem('token'); 
-                const res = await axios.get(`http://137.97.126.110/api/v1/user`, {
+                const res = await axios.get(`http://127.0.0.1:8080/api/v1/user`, {
                     headers: {
                         Authorization: `Bearer ${token}`, // send token in header
                     },

@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { setMessages } from '../redux/messageSlice';
 import axios from 'axios';
 //import { BASE_URL } from '..';
-const API_URL = import.meta.env.VITE_API_URL|| "http://localhost:8080";
+
 const useGetMessages = () => {
     const { selectedUser } = useSelector(store => store.user);
     const dispatch = useDispatch();
@@ -12,7 +12,7 @@ const useGetMessages = () => {
             try {
                  const token = localStorage.getItem('token');
                 axios.defaults.withCredentials = true;
-                const res = await axios.get(`http://137.97.126.110/api/v1/message/${selectedUser?._id}`
+                const res = await axios.get(`http://127.0.0.1:8080/api/v1/message/${selectedUser?._id}`
                     ,
                     {
                         headers: {
