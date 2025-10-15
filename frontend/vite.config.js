@@ -10,7 +10,9 @@ export default defineConfig({
         target: 'http://localhost:8080',
         changeOrigin: true,
         secure: false,
-      }
-    }
+      },
+    
+    },
+    port: 5175
   }
 })

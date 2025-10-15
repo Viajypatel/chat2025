@@ -10,7 +10,7 @@ import { app,server } from "./socket/socket.js";
 dotenv.config({});
 
 app.use(cors({
-    origin: 'http://137.97.126.110:5175',
+    origin: ['http://localhost:5175','http://137.97.126.110:5173','http://137.97.126.110:5175','http://localhost:5173'],
     credentials: true, 
     methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS'],
     allowedHeaders: ['Content-Type','Authorization']
